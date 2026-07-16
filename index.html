@@ -4,15 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bean Machine - KNGLRP</title>
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <!-- FontAwesome İkonları -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
     <style>
-        /* Renk Paleti ve Değişkenler */
         :root {
             --bg-dark: #0f0b08;
             --bg-card: #18120d;
@@ -22,9 +18,9 @@
             --text-muted: #a89f91;
             --font-title: 'Oswald', sans-serif;
             --font-body: 'Poppins', sans-serif;
+            --badge-green: #39ff88;
         }
 
-        /* Genel Ayarlar */
         * {
             margin: 0;
             padding: 0;
@@ -40,19 +36,10 @@
             overflow-x: hidden;
         }
 
-        /* Scrollbar Özelleştirme */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: var(--bg-dark);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: var(--primary);
-            border-radius: 4px;
-        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-dark); }
+        ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
 
-        /* Navigasyon Barı */
         nav {
             position: fixed;
             top: 0;
@@ -82,7 +69,42 @@
 
         .nav-logo img {
             height: 45px;
-            width: auto;
+            transition: transform 0.35s ease, filter 0.35s ease;
+        }
+
+        .nav-logo:hover img {
+            transform: scale(1.06);
+            filter: drop-shadow(0 0 12px rgba(197,160,89,0.35));
+        }
+
+        .nav-right { display: flex; align-items: center; gap: 14px; }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 11px;
+            border: 1px solid rgba(57, 255, 136, 0.28);
+            border-radius: 999px;
+            background: rgba(14, 30, 20, 0.72);
+            color: var(--badge-green);
+            font-family: var(--font-title);
+            font-size: 12px;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            box-shadow: 0 0 10px rgba(57, 255, 136, 0.12);
+            animation: pulseGlow 2.2s infinite;
+            white-space: nowrap;
+            line-height: 1;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--badge-green);
+            box-shadow: 0 0 8px var(--badge-green);
+            flex-shrink: 0;
         }
 
         .nav-links {
@@ -101,11 +123,8 @@
             text-transform: uppercase;
         }
 
-        .nav-links a:hover, .nav-links a.active {
-            color: var(--primary);
-        }
+        .nav-links a:hover, .nav-links a.active { color: var(--primary); }
 
-        /* Hero (Giriş) Bölümü */
         .hero {
             height: 100vh;
             display: flex;
@@ -114,29 +133,54 @@
             text-align: center;
             position: relative;
             padding: 0 20px;
-            
-            /* =========================================================================
-               ARKA PLAN MEKAN GÖRSELİ: 
-               Aşağıdaki url('...') kısmındaki adresi ImgBB'den alacağınız 
-               DİREKT BAĞLANTI (.jpg, .png ile biten) linkiyle değiştirin.
-               ========================================================================= */
-            background-image: linear-gradient(rgba(15, 11, 8, 0.75), rgba(15, 11, 8, 0.85)), 
-                              url('https://i.ibb.co/bM5JbFDj/fdg.png');
-            
+            overflow: hidden;
+            background-image: linear-gradient(rgba(15, 11, 8, 0.75), rgba(15, 11, 8, 0.85)), url('https://i.ibb.co/bM5JbFDj/fdg.png');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+
+        .coffee-particles {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .coffee-particles span {
+            position: absolute;
+            bottom: -120px;
+            left: var(--x);
+            width: var(--size);
+            height: var(--size);
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(197,160,89,0.45) 0%, rgba(197,160,89,0.18) 45%, transparent 72%);
+            filter: blur(2px);
+            opacity: 0;
+            animation: steamRise var(--dur) ease-in-out infinite;
+            animation-delay: var(--delay);
+            box-shadow: 0 0 14px rgba(197, 160, 89, 0.08);
         }
 
         .hero-content {
             max-width: 800px;
             animation: fadeIn 1.5s ease;
+            position: relative;
+            z-index: 1;
         }
 
         .hero-logo {
             max-width: 220px;
             margin-bottom: 25px;
             filter: drop-shadow(0px 0px 20px rgba(197, 160, 89, 0.4));
+            transition: transform 0.35s ease, filter 0.35s ease;
+        }
+
+        .hero-logo:hover {
+            transform: scale(1.04);
+            filter: drop-shadow(0 0 16px rgba(197,160,89,0.55));
         }
 
         .hero h1 {
@@ -160,6 +204,8 @@
 
         .btn {
             display: inline-block;
+            position: relative;
+            overflow: hidden;
             background-color: transparent;
             color: var(--primary);
             border: 2px solid var(--primary);
@@ -172,15 +218,28 @@
             font-weight: bold;
             transition: all 0.3s ease;
             cursor: pointer;
+            z-index: 0;
         }
 
+        .btn::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -75%;
+            width: 45%;
+            height: 100%;
+            background: linear-gradient(120deg, transparent, rgba(255,255,255,0.75), transparent);
+            transform: skewX(-20deg);
+        }
+
+        .btn:hover::before { animation: shine 0.9s ease; }
         .btn:hover {
             background-color: var(--primary);
             color: var(--bg-dark);
             box-shadow: 0 0 15px rgba(197, 160, 89, 0.4);
+            transform: translateY(-2px);
         }
 
-        /* Genel Bölüm Düzenleri */
         section {
             padding: 100px 8%;
             border-bottom: 1px solid rgba(197, 160, 89, 0.05);
@@ -206,7 +265,6 @@
             margin: 15px auto 0 auto;
         }
 
-        /* Hakkımızda / Tanıtım */
         .about-container {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -238,26 +296,34 @@
             border: 1px solid var(--primary);
             padding: 5px;
             background-color: var(--bg-card);
-            transition: transform 0.3s ease;
             position: relative;
             overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
-            aspect-ratio: 1.5; /* more standard widescreen-ish aspect ratio */
+            aspect-ratio: 1.5;
         }
 
         .about-img-wrapper img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            transition: transform 0.22s ease, filter 0.22s ease, opacity 0.22s ease;
+            transform-origin: center center;
         }
 
         .about-img-wrapper:hover {
-            transform: scale(1.03);
+            transform: none;
+            box-shadow: 0 0 14px rgba(197,160,89,0.14);
+            border-color: rgba(197,160,89,0.4);
         }
 
-        /* Değerlerimiz (Özellikler Grid) */
+        .about-img-wrapper:hover img {
+            transform: scale(1.03);
+            filter: brightness(1.05) saturate(1.03);
+            opacity: 0.98;
+        }
+
         .grid-features {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -282,6 +348,13 @@
             font-size: 40px;
             color: var(--primary);
             margin-bottom: 20px;
+            transition: transform 0.3s ease, color 0.3s ease, text-shadow 0.3s ease;
+        }
+
+        .feature-card:hover .feature-icon {
+            transform: scale(1.12);
+            color: #ffe2a8;
+            text-shadow: 0 0 12px rgba(197,160,89,0.5);
         }
 
         .feature-card h3 {
@@ -298,7 +371,111 @@
             font-size: 14px;
         }
 
-        /* Özel Alanlar (Dost Kart, Menü, Atmosfer) */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 24px;
+        }
+
+        .menu-card {
+            background: linear-gradient(180deg, rgba(24,18,13,0.96), rgba(15,11,8,0.98));
+            border: 1px solid rgba(197, 160, 89, 0.14);
+            border-radius: 16px;
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+            transform: translateZ(0);
+            transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
+        }
+
+        .menu-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(120deg, transparent 20%, rgba(255,255,255,0.06) 50%, transparent 80%);
+            transform: translateX(-120%);
+            transition: transform 0.7s ease;
+        }
+
+        .menu-card:hover::before {
+            transform: translateX(120%);
+        }
+
+        .menu-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            border-color: rgba(197, 160, 89, 0.35);
+            box-shadow: 0 16px 30px rgba(0, 0, 0, 0.35), 0 0 18px rgba(197, 160, 89, 0.14);
+        }
+
+        .menu-top {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            align-items: flex-start;
+            margin-bottom: 14px;
+        }
+
+        .menu-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            display: grid;
+            place-items: center;
+            background: rgba(197, 160, 89, 0.12);
+            color: var(--primary);
+            font-size: 22px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
+        }
+
+        .menu-card:hover .menu-icon {
+            transform: scale(1.12);
+            color: #ffe2a8;
+            box-shadow: 0 0 16px rgba(197, 160, 89, 0.25);
+        }
+
+        .menu-badge {
+            padding: 6px 10px;
+            border-radius: 999px;
+            border: 1px solid rgba(197, 160, 89, 0.18);
+            color: var(--text-muted);
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .menu-card h3 {
+            font-family: var(--font-title);
+            font-size: 22px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--text-light);
+            margin-bottom: 8px;
+        }
+
+        .menu-card p {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-bottom: 18px;
+        }
+
+        .menu-price-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-top: auto;
+            padding-top: 16px;
+            border-top: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .menu-price {
+            font-family: var(--font-title);
+            font-size: 26px;
+            color: var(--primary);
+            letter-spacing: 1px;
+        }
+
+        .menu-meta { font-size: 12px; color: var(--text-muted); }
+
         .special-sections {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -312,6 +489,7 @@
             overflow: hidden;
             display: flex;
             flex-direction: column;
+            position: relative;
         }
 
         .special-card img {
@@ -319,6 +497,13 @@
             width: 100%;
             object-fit: cover;
             border-bottom: 2px solid var(--primary);
+            transition: transform 0.22s ease, filter 0.22s ease;
+            transform-origin: center center;
+        }
+
+        .special-card:hover img {
+            transform: scale(1.03);
+            filter: brightness(1.05) saturate(1.03);
         }
 
         .special-content {
@@ -344,33 +529,6 @@
             margin-bottom: 20px;
         }
 
-
-.kahve-banner {
-    /* Buraya kendi ImgBB görsel linkini yapıştır (Direkt Bağlantı olmalı) */
-    background-image: url('https://i.ibb.co/t1vCgjT/ce4de3050c1626451de343ee49efa6825a2f9b01.png');
-    
-    /* Görselin kutuyu tamamen kaplamasını sağlar */
-    background-size: cover; 
-    
-    /* Görseli ortalar */
-    background-position: center; 
-    
-    /* Görselin tekrar etmesini engeller */
-    background-repeat: no-repeat; 
-    
-    /* Metnin kutu içinde düzgün durması ve okunması için boşluklar ve renkler */
-    padding: 100px 20px; 
-    text-align: center;
-    color: #ffffff; /* Görsel üstünde metnin okunabilmesi için beyaz renk */
-}
-
-.kahve-banner h2 {
-    font-size: 36px;
-    font-weight: bold;
-    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7); /* Metnin arkasındaki görselden dolayı okunmama ihtimaline karşı gölge */
-}
-        
-        /* İletişim & Sosyal Medya Footer */
         footer {
             background-color: #080605;
             padding: 60px 8% 30px 8%;
@@ -382,6 +540,12 @@
             max-width: 120px;
             margin-bottom: 20px;
             filter: drop-shadow(0px 0px 10px rgba(197, 160, 89, 0.2));
+            transition: transform 0.35s ease, filter 0.35s ease;
+        }
+
+        .footer-logo:hover {
+            transform: scale(1.05);
+            filter: drop-shadow(0 0 14px rgba(197,160,89,0.35));
         }
 
         .footer-quote {
@@ -403,12 +567,13 @@
         .social-icons a {
             color: var(--text-muted);
             font-size: 22px;
-            transition: color 0.3s ease, transform 0.3s ease;
+            transition: color 0.3s ease, transform 0.3s ease, text-shadow 0.3s ease;
         }
 
         .social-icons a:hover {
             color: var(--primary);
-            transform: translateY(-3px);
+            transform: translateY(-3px) scale(1.08);
+            text-shadow: 0 0 10px rgba(197,160,89,0.35);
         }
 
         .location-info {
@@ -421,9 +586,7 @@
             font-size: 15px;
         }
 
-        .location-info i {
-            color: var(--primary);
-        }
+        .location-info i { color: var(--primary); }
 
         .copyright {
             color: #555;
@@ -432,64 +595,79 @@
             padding-top: 20px;
         }
 
-        /* Animasyonlar */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Mobil Uyumluluk */
+        @keyframes pulseGlow {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 10px rgba(57, 255, 136, 0.12); }
+            50% { transform: scale(1.02); box-shadow: 0 0 16px rgba(57, 255, 136, 0.22); }
+        }
+
+        @keyframes shine {
+            0% { left: -75%; }
+            100% { left: 130%; }
+        }
+
+        @keyframes steamRise {
+            0% { transform: translateY(0) scale(0.8); opacity: 0; }
+            12% { opacity: 0.5; }
+            50% { opacity: 0.28; transform: translateY(-520px) scale(1.08); }
+            100% { transform: translateY(-980px) scale(1.28); opacity: 0; }
+        }
+
         @media (max-width: 768px) {
-            nav {
-                padding: 15px 20px;
-            }
-            .nav-links {
-                display: none;
-            }
-            .hero h1 {
-                font-size: 38px;
-            }
-            .hero p {
-                font-size: 16px;
-            }
-            .about-container {
-                grid-template-columns: 1fr;
-            }
-            section {
-                padding: 60px 5%;
-            }
+            nav { padding: 15px 20px; }
+            .nav-links { display: none; }
+            .nav-right { gap: 0; }
+            .status-badge { font-size: 11px; padding: 5px 9px; }
+            .hero h1 { font-size: 38px; }
+            .hero p { font-size: 16px; }
+            .about-container { grid-template-columns: 1fr; }
+            section { padding: 60px 5%; }
+            .menu-grid { grid-template-columns: 1fr; }
+            .hero { background-attachment: scroll; }
         }
     </style>
 </head>
 <body>
-
-    <!-- Navigasyon Barı -->
     <nav>
         <a href="#" class="nav-logo">
-            <!-- LOGO GÖRSELİ (Navigasyon): Hızlıresim linkinizi src="" içerisine yapıştırın -->
-            <img src="https://i.ibb.co/t1vCgjT/ce4de3050c1626451de343ee49efa6825a2f9b01.png"> 
+            <img src="https://i.ibb.co/t1vCgjT/ce4de3050c1626451de343ee49efa6825a2f9b01.png" alt="Bean Machine">
             BEAN MACHINE
         </a>
-        <ul class="nav-links">
-            <li><a href="#hero">Ana Sayfa</a></li>
-            <li><a href="#hakkimizda">Hakkımızda</a></li>
-            <li><a href="#degerlerimiz">Değerlerimiz</a></li>
-            <li><a href="#ozellikler">Ayrıcalıklar</a></li>
-        </ul>
+        <div class="nav-right">
+            <ul class="nav-links">
+                <li><a href="#hero">Ana Sayfa</a></li>
+                <li><a href="#hakkimizda">Hakkımızda</a></li>
+                <li><a href="#degerlerimiz">Değerlerimiz</a></li>
+                <li><a href="#ozellikler">Ayrıcalıklar</a></li>
+                <li><a href="#menu">Menü</a></li>
+            </ul>
+            <div class="status-badge"><span class="status-dot"></span> Mekan Açık</div>
+        </div>
     </nav>
 
-    <!-- Hero Alanı -->
     <section id="hero" class="hero">
+        <div class="coffee-particles" aria-hidden="true">
+            <span style="--x:8%; --size:14px; --dur:10s; --delay:0s;"></span>
+            <span style="--x:16%; --size:20px; --dur:12s; --delay:1s;"></span>
+            <span style="--x:28%; --size:10px; --dur:9s; --delay:2s;"></span>
+            <span style="--x:41%; --size:18px; --dur:11s; --delay:0.5s;"></span>
+            <span style="--x:55%; --size:12px; --dur:10.5s; --delay:1.5s;"></span>
+            <span style="--x:67%; --size:22px; --dur:13s; --delay:2.2s;"></span>
+            <span style="--x:79%; --size:11px; --dur:9.5s; --delay:0.8s;"></span>
+            <span style="--x:88%; --size:16px; --dur:12.5s; --delay:1.8s;"></span>
+        </div>
         <div class="hero-content">
-            <!-- LOGO GÖRSELİ (Ana Giriş): Hızlıresim linkinizi src="" içerisine yapıştırın -->
-            <img class="hero-logo" src="https://i.ibb.co/t1vCgjT/ce4de3050c1626451de343ee49efa6825a2f9b01.png">
+            <img class="hero-logo" src="https://i.ibb.co/t1vCgjT/ce4de3050c1626451de343ee49efa6825a2f9b01.png" alt="Bean Machine Logo">
             <h1>KAHVEYE OLAN TUTKUMUZ,<br>SİZE OLAN BAĞLILIĞIMIZ.</h1>
             <p>Her kupada gerçek, her yudumda kalite.</p>
             <a href="#hakkimizda" class="btn">Keşfet</a>
         </div>
     </section>
 
-    <!-- Hakkımızda Bölümü -->
     <section id="hakkimizda">
         <div class="about-container">
             <div class="about-text">
@@ -498,29 +676,15 @@
                 <p>Bean Machine, kahveyi sadece bir içecek değil, bir deneyim olarak görenlerin buluşma noktasıdır. Özenle seçilmiş çekirdekler, ustalıkla hazırlanan tarifler ve benzersiz atmosferimizle, her gününüze en iyi kahve deneyimini sunuyoruz.</p>
                 <p>Burada sohbetler koyulaşır, bağlar güçlenir, anılar birikir. Sizlerle kurduğumuz bağ, en değerli hazinemizdir.</p>
             </div>
-            
             <div class="about-images">
-                <div class="about-img-wrapper">
-                    <!-- HAKKIMIZDA GÖRSELİ 1: Hızlıresim linkinizi src="" içerisine yapıştırın -->
-                    <img src="https://i.ibb.co/bM5JbFDj/fdg.png" alt="Sıcak Mekan">
-                </div>
-                <div class="about-img-wrapper">
-                    <!-- HAKKIMIZDA GÖRSELİ 2: Hızlıresim linkinizi src="" içerisine yapıştırın -->
-                    <img src="https://i.ibb.co/MyShrZqX/dsfdf.png" alt="Los Santos Şubesi">
-                </div>
-                <div class="about-img-wrapper">
-                    <!-- HAKKIMIZDA GÖRSELİ 3: Hızlıresim linkinizi src="" içerisine yapıştırın -->
-                    <img src="https://i.ibb.co/gZDmHtyg/Screenshot-17.png" alt="Özel Tarifler">
-                </div>
-                <div class="about-img-wrapper">
-                    <!-- HAKKIMIZDA GÖRSELİ 4: Hızlıresim linkinizi src="" içerisine yapıştırın -->
-                    <img src="https://i.ibb.co/1fGt3p2Q/Screenshot-18.png" alt="Samimi Rol Alanı">
-                </div>
+                <div class="about-img-wrapper"><img src="https://i.ibb.co/bM5JbFDj/fdg.png" alt="Sıcak Mekan"></div>
+                <div class="about-img-wrapper"><img src="https://i.ibb.co/MyShrZqX/dsfdf.png" alt="Los Santos Şubesi"></div>
+                <div class="about-img-wrapper"><img src="https://i.ibb.co/gZDmHtyg/Screenshot-17.png" alt="Özel Tarifler"></div>
+                <div class="about-img-wrapper"><img src="https://i.ibb.co/1fGt3p2Q/Screenshot-18.png" alt="Samimi Rol Alanı"></div>
             </div>
         </div>
     </section>
 
-    <!-- Değerlerimiz (İkonlu Alan) -->
     <section id="degerlerimiz" style="background-color: #0c0907;">
         <h2 class="section-title">Kahvede Kalitenin Adı</h2>
         <div class="grid-features">
@@ -551,13 +715,77 @@
             </div>
         </div>
     </section>
-    <!-- Özellikler / Kampanyalar -->
+
+    <section id="menu">
+        <h2 class="section-title">Menü Fiyatları</h2>
+        <div class="menu-grid">
+            <div class="menu-card">
+                <div class="menu-top">
+                    <div class="menu-icon"><i class="fa-solid fa-mug-hot"></i></div>
+                    <div class="menu-badge">Sıcak İçecek</div>
+                </div>
+                <h3>Espresso</h3>
+                <p>Yoğun aroma, kısa içim ve klasik kahve deneyimi.</p>
+                <div class="menu-price-row">
+                    <div>
+                        <div class="menu-price">₺45</div>
+                        <div class="menu-meta">Tek shot</div>
+                    </div>
+                    <a href="#" class="btn" style="padding: 8px 18px; font-size: 13px;">Sipariş</a>
+                </div>
+            </div>
+            <div class="menu-card">
+                <div class="menu-top">
+                    <div class="menu-icon"><i class="fa-solid fa-mug-saucer"></i></div>
+                    <div class="menu-badge">Favori</div>
+                </div>
+                <h3>Cappuccino</h3>
+                <p>Köpüğüyle dengeli, yumuşak ve aromatik bir seçenek.</p>
+                <div class="menu-price-row">
+                    <div>
+                        <div class="menu-price">₺55</div>
+                        <div class="menu-meta">Orta boy</div>
+                    </div>
+                    <a href="#" class="btn" style="padding: 8px 18px; font-size: 13px;">Sipariş</a>
+                </div>
+            </div>
+            <div class="menu-card">
+                <div class="menu-top">
+                    <div class="menu-icon"><i class="fa-solid fa-ice-cream"></i></div>
+                    <div class="menu-badge">Soğuk</div>
+                </div>
+                <h3>Iced Latte</h3>
+                <p>Serin, hafif ve kahve aromasını öne çıkaran ferah içim.</p>
+                <div class="menu-price-row">
+                    <div>
+                        <div class="menu-price">₺60</div>
+                        <div class="menu-meta">Buzlu servis</div>
+                    </div>
+                    <a href="#" class="btn" style="padding: 8px 18px; font-size: 13px;">Sipariş</a>
+                </div>
+            </div>
+            <div class="menu-card">
+                <div class="menu-top">
+                    <div class="menu-icon"><i class="fa-solid fa-cookie-bite"></i></div>
+                    <div class="menu-badge">Atıştırmalık</div>
+                </div>
+                <h3>Cheesecake</h3>
+                <p>Kahvenin yanında tatlı bir eşlikçi, yumuşak doku ve yoğun tat.</p>
+                <div class="menu-price-row">
+                    <div>
+                        <div class="menu-price">₺70</div>
+                        <div class="menu-meta">Günlük taze</div>
+                    </div>
+                    <a href="#" class="btn" style="padding: 8px 18px; font-size: 13px;">Sipariş</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <section id="ozellikler">
         <h2 class="section-title">Ayrıcalıklı Hizmetlerimiz</h2>
         <div class="special-sections">
-            <!-- Kart 1: Dost Kart -->
             <div class="special-card">
-                <!-- AYRICALIKLAR GÖRSELİ 1 (Dost Kart): Hızlıresim linkinizi src="" içerisine yapıştırın -->
                 <img src="https://i.ibb.co/Xf0Snxdx/jm.png" alt="Dost Kart">
                 <div class="special-content">
                     <h3>Bean Machine Dost Kart</h3>
@@ -565,9 +793,7 @@
                     <a href="#" class="btn" style="padding: 8px 20px; font-size: 14px; align-self: flex-start;">Detaylar</a>
                 </div>
             </div>
-            <!-- Kart 2: Özel Tarifler -->
             <div class="special-card">
-                <!-- AYRICALIKLAR GÖRSELİ 2 (Özel Tarifler): Hızlıresim linkinizi src="" içerisine yapıştırın -->
                 <img src="https://i.ibb.co/8nkcySCT/Gemini-Generated-mage-ataustataustatau.png" alt="Özel Tarifler">
                 <div class="special-content">
                     <h3>Özel Tarifler, Eşsiz Deneyimler</h3>
@@ -575,9 +801,7 @@
                     <a href="#" class="btn" style="padding: 8px 20px; font-size: 14px; align-self: flex-start;">Menüyü Gör</a>
                 </div>
             </div>
-            <!-- Kart 3: Atmosfer -->
             <div class="special-card">
-                <!-- AYRICALIKLAR GÖRSELİ 3 (Atmosfer): Hızlıresim linkinizi src="" içerisine yapıştırın -->
                 <img src="https://i.ibb.co/gZDmHtyg/Screenshot-17.png" alt="Atmosferimiz">
                 <div class="special-content">
                     <h3>Atmosferimiz, Kahvemiz Kadar Özel</h3>
@@ -588,45 +812,31 @@
         </div>
     </section>
 
-    <!-- Footer ve İletişim -->
     <footer>
-        <!-- LOGO GÖRSELİ (Footer): Hızlıresim linkinizi src="" içerisine yapıştırın -->
-        <img class="footer-logo" src="https://i.ibb.co/t1vCgjT/ce4de3050c1626451de343ee49efa6825a2f9b01.png">
+        <img class="footer-logo" src="https://i.ibb.co/t1vCgjT/ce4de3050c1626451de343ee49efa6825a2f9b01.png" alt="Bean Machine">
         <p class="footer-quote">İyi Kahve, İyi İnsanlar, İyi Anlar.</p>
-        
-        <!-- Sosyal Medya İkonları -->
         <div class="social-icons">
-            <!-- 1. Instagram Linki (Aşağıdaki INSTAGRAM_LINKI_1 yerine kendi linkinizi yazın) -->
-            <a href="https://www.instagram.com/cesurdrnn" target="_blank" title="Instagram 1"><i class="fa-brands fa-instagram"></i></a>
-            
-            <!-- 2. Instagram Linki (Aşağıdaki INSTAGRAM_LINKI_2 yerine kendi linkinizi yazın) -->
-            <a href="https://www.instagram.com/ordereel" target="_blank" title="Instagram 2"><i class="fa-brands fa-instagram"></i></a>
-            
-            <!-- Web Sitesi Linki (Aşağıdaki WEB_SITESI_LINKI yerine kendi linkinizi yazın) -->
-            <a href="https://github.com/nieves07" target="_blank" title="Web Sitesi"><i class="fa-solid fa-globe"></i></a>
+            <a href="https://www.instagram.com/cesurdrnn" target="_blank"><i class="fa-brands fa-instagram"></i></a>
+            <a href="https://www.instagram.com/ordereel" target="_blank"><i class="fa-brands fa-instagram"></i></a>
+            <a href="https://github.com/nieves07" target="_blank"><i class="fa-solid fa-globe"></i></a>
         </div>
-
         <div class="location-info">
             <i class="fa-solid fa-location-dot"></i>
             <span>Los Santos'un en iyi kahvesi seni bekliyor.</span>
         </div>
-
         <p class="copyright">&copy; LS . Bean Machine. Tüm Hakları Saklıdır. Developed by NieVes.</p>
     </footer>
 
-    <!-- Basit Aktif Navigasyon Takip Scripti -->
     <script>
         window.addEventListener('scroll', () => {
             let sections = document.querySelectorAll('section');
             let navLinks = document.querySelectorAll('.nav-links a');
-            
             sections.forEach(sec => {
                 let top = window.scrollY;
                 let offset = sec.offsetTop - 150;
                 let height = sec.offsetHeight;
                 let id = sec.getAttribute('id');
-                
-                if(top >= offset && top < offset + height) {
+                if (top >= offset && top < offset + height) {
                     navLinks.forEach(links => {
                         links.classList.remove('active');
                         document.querySelector('.nav-links a[href*=' + id + ']').classList.add('active');
@@ -637,4 +847,3 @@
     </script>
 </body>
 </html>
-
