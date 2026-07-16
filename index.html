@@ -1,693 +1,585 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bean Machine Coffee — Şehrin Enerjisi</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --bg:#180F09;
-    --bg-alt:#20140C;
-    --panel:#2A1A0F;
-    --panel-line:#4A331F;
-    --gold:#C9A15C;
-    --gold-bright:#E9C77E;
-    --copper:#B5602B;
-    --cream:#F1E4CD;
-    --cream-dim:#C9BBA4;
-    --steam:#8A7A64;
-    --online:#7FBE8F;
-    --shadow-deep: 0 30px 80px -30px rgba(0,0,0,.7);
-  }
-  *{box-sizing:border-box; margin:0; padding:0;}
-  html{scroll-behavior:smooth;}
-  body{
-    background:
-      radial-gradient(ellipse 900px 500px at 15% -10%, rgba(201,161,92,.10), transparent 60%),
-      radial-gradient(ellipse 700px 500px at 100% 10%, rgba(181,96,43,.10), transparent 60%),
-      var(--bg);
-    color:var(--cream);
-    font-family:'Manrope', sans-serif;
-    overflow-x:hidden;
-  }
-  a{color:inherit; text-decoration:none;}
-  img{max-width:100%; display:block;}
-  ::selection{background:var(--gold); color:var(--bg);}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bean Machine Coffee - Los Santos</title>
+    <!-- Google Fonts: Font stili için görseldeki gibi kalın ve şık fontlar tercih edildi -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <!-- FontAwesome İkonları -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* Renk Paleti ve Değişkenler */
+        :root {
+            --bg-dark: #0a0806;
+            --bg-card: #14100c;
+            --primary: #c5a059;
+            --primary-dark: #8a6d3b;
+            --text-light: #f5efe6;
+            --text-muted: #a89f91;
+            --font-title: 'Oswald', sans-serif;
+            --font-body: 'Poppins', sans-serif;
+        }
 
-  .eyebrow{
-    font-family:'JetBrains Mono', monospace;
-    font-size:12px;
-    letter-spacing:.24em;
-    text-transform:uppercase;
-    color:var(--gold);
-    display:flex; align-items:center; gap:10px;
-  }
-  .eyebrow::before{
-    content:"";
-    width:22px; height:1px; background:var(--gold);
-  }
-  h1,h2,h3{ font-family:'Fraunces', serif; font-weight:600; line-height:1.05; letter-spacing:-.01em;}
-  .wrap{max-width:1180px; margin:0 auto; padding:0 32px;}
-  section{position:relative;}
+        /* Genel Ayarlar */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
 
-  /* ---------- NAV ---------- */
-  header{
-    position:fixed; top:0; left:0; right:0; z-index:100;
-    background:linear-gradient(to bottom, rgba(15,9,5,.92), rgba(15,9,5,0));
-    padding:22px 0 40px;
-    transition:background .3s ease, padding .3s ease, backdrop-filter .3s ease;
-  }
-  header.scrolled{
-    background:rgba(15,9,5,.86);
-    backdrop-filter:blur(10px);
-    padding:14px 0;
-    border-bottom:1px solid var(--panel-line);
-  }
-  nav{display:flex; align-items:center; justify-content:space-between;}
-  .brand{display:flex; align-items:center; gap:12px; font-family:'Fraunces', serif; font-size:19px; font-weight:600; letter-spacing:.01em;}
-  .brand .mark{
-    width:38px; height:38px; border-radius:50%;
-    border:1px solid var(--gold);
-    display:flex; align-items:center; justify-content:center;
-    position:relative;
-  }
-  .brand .mark::before{
-    content:"";
-    width:14px; height:14px;
-    background:var(--gold);
-    border-radius:50% 50% 50% 0;
-    transform:rotate(-45deg);
-  }
-  .brand span{color:var(--gold-bright);}
-  .navlinks{display:flex; gap:34px; font-size:14px; color:var(--cream-dim);}
-  .navlinks a{position:relative; padding-bottom:4px; transition:color .2s;}
-  .navlinks a:hover{color:var(--cream);}
-  .navlinks a::after{
-    content:""; position:absolute; left:0; right:100%; bottom:0; height:1px;
-    background:var(--gold); transition:right .25s ease;
-  }
-  .navlinks a:hover::after{right:0;}
-  .btn{
-    font-family:'JetBrains Mono', monospace;
-    font-size:12.5px; letter-spacing:.06em;
-    padding:12px 22px;
-    border:1px solid var(--gold);
-    color:var(--gold-bright);
-    border-radius:2px;
-    display:inline-flex; align-items:center; gap:10px;
-    transition:background .25s, color .25s, transform .2s;
-  }
-  .btn:hover{background:var(--gold); color:#1b1006; transform:translateY(-2px);}
-  .btn.solid{background:var(--gold); color:#1b1006;}
-  .btn.solid:hover{background:var(--gold-bright);}
-  .menu-toggle{display:none; flex-direction:column; gap:5px; cursor:pointer; background:none; border:none;}
-  .menu-toggle span{width:24px; height:2px; background:var(--cream);}
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            font-family: var(--font-body);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
 
-  /* ---------- HERO ---------- */
-  .hero{
-    min-height:100vh;
-    display:flex; flex-direction:column; justify-content:flex-end;
-    padding:180px 0 0;
-    position:relative;
-    background:
-      linear-gradient(to top, var(--bg) 2%, rgba(24,15,9,.55) 40%, rgba(24,15,9,.15) 75%),
-      linear-gradient(160deg, #241608 0%, #180F09 55%, #120A05 100%);
-  }
-  .skyline{
-    position:absolute; inset:0; z-index:0; opacity:.5;
-    pointer-events:none;
-  }
-  .hero-inner{position:relative; z-index:2; padding-bottom:90px;}
-  .hero .eyebrow{margin-bottom:26px;}
-  .hero h1{
-    font-size:clamp(48px, 8vw, 104px);
-    color:var(--cream);
-  }
-  .hero h1 em{
-    font-style:normal; color:var(--gold-bright);
-    display:block;
-  }
-  .hero p.lede{
-    max-width:480px; margin-top:26px; color:var(--cream-dim);
-    font-size:16.5px; line-height:1.7;
-  }
-  .hero-actions{display:flex; gap:16px; margin-top:40px; flex-wrap:wrap;}
-  .hero-foot{
-    margin-top:70px; padding-top:26px; border-top:1px solid var(--panel-line);
-    display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:18px;
-  }
-  .hero-foot .coord{font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--steam); letter-spacing:.05em;}
-  .scroll-cue{
-    display:flex; align-items:center; gap:10px; font-family:'JetBrains Mono', monospace;
-    font-size:11px; color:var(--steam); letter-spacing:.1em; text-transform:uppercase;
-  }
-  .scroll-cue .line{width:1px; height:34px; background:linear-gradient(var(--gold), transparent); animation:scrollcue 1.8s infinite ease-in-out;}
-  @keyframes scrollcue{0%{transform:scaleY(.3); transform-origin:top;} 50%{transform:scaleY(1); transform-origin:top;} 100%{transform:scaleY(.3); transform-origin:bottom;}}
+        /* Scrollbar Özelleştirme */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-dark);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
 
-  /* ---------- SIGNATURE: SERVER / GAUGE PANEL ---------- */
-  .panel-bar{
-    background:var(--panel);
-    border-top:1px solid var(--panel-line);
-    border-bottom:1px solid var(--panel-line);
-    padding:0;
-  }
-  .panel-grid{
-    display:grid;
-    grid-template-columns:1.1fr repeat(4, 1fr);
-    align-items:stretch;
-  }
-  .panel-cell{
-    padding:30px 26px;
-    border-right:1px solid var(--panel-line);
-  }
-  .panel-grid .panel-cell:last-child{border-right:none;}
-  .gauge-cell{
-    display:flex; align-items:center; gap:20px;
-  }
-  .gauge{width:76px; height:76px; flex-shrink:0;}
-  .gauge circle.track{fill:none; stroke:var(--panel-line); stroke-width:5;}
-  .gauge circle.fill{fill:none; stroke:var(--gold); stroke-width:5; stroke-linecap:round; stroke-dasharray:210; stroke-dashoffset:60; transform:rotate(-90deg); transform-origin:50% 50%;}
-  .gauge-label{font-family:'JetBrains Mono', monospace;}
-  .gauge-label .k{font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--steam); display:block; margin-bottom:6px;}
-  .gauge-label .v{font-size:20px; color:var(--gold-bright); display:flex; align-items:center; gap:8px;}
-  .dot{width:7px; height:7px; border-radius:50%; background:var(--online); box-shadow:0 0 8px var(--online); animation:pulse 1.6s infinite;}
-  @keyframes pulse{0%,100%{opacity:1;} 50%{opacity:.35;}}
-  .stat-cell .k{font-family:'JetBrains Mono', monospace; font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--steam); display:block; margin-bottom:8px;}
-  .stat-cell .v{font-family:'Fraunces', serif; font-size:30px; color:var(--cream);}
-  .stat-cell .v span{color:var(--gold-bright);}
+        /* Navigasyon Barı */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(10, 8, 6, 0.95);
+            border-bottom: 1px solid rgba(197, 160, 89, 0.2);
+            z-index: 1000;
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(10px);
+        }
 
-  /* ---------- SECTION HEADERS ---------- */
-  .section-pad{padding:130px 0;}
-  .section-head{max-width:640px; margin-bottom:70px;}
-  .section-head h2{font-size:clamp(32px, 4.2vw, 50px); margin-top:18px; color:var(--cream);}
-  .section-head p{color:var(--cream-dim); margin-top:18px; font-size:15.5px; line-height:1.75; max-width:520px;}
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--primary);
+            font-family: var(--font-title);
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
 
-  /* ---------- VALUES ---------- */
-  .values-grid{display:grid; grid-template-columns:repeat(4, 1fr); gap:1px; background:var(--panel-line); border:1px solid var(--panel-line);}
-  .value-card{background:var(--bg-alt); padding:38px 28px; transition:background .25s;}
-  .value-card:hover{background:var(--panel);}
-  .value-card .num{font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--gold); letter-spacing:.1em;}
-  .value-card h3{font-size:21px; margin-top:22px; color:var(--cream); font-weight:600;}
-  .value-card p{margin-top:12px; font-size:14px; color:var(--cream-dim); line-height:1.65;}
+        .nav-logo img {
+            height: 40px;
+            width: auto;
+        }
 
-  /* ---------- PROCESS (Fabrika Düzeni) ---------- */
-  .process{position:relative;}
-  .process-line{
-    position:absolute; left:29px; top:14px; bottom:14px; width:1px;
-    background:linear-gradient(var(--panel-line), var(--gold), var(--panel-line));
-  }
-  .process-step{display:grid; grid-template-columns:60px 1fr; gap:0; position:relative; padding-bottom:56px;}
-  .process-step:last-child{padding-bottom:0;}
-  .process-num{
-    width:60px; height:60px; border-radius:50%;
-    background:var(--bg); border:1px solid var(--gold);
-    display:flex; align-items:center; justify-content:center;
-    font-family:'JetBrains Mono', monospace; color:var(--gold-bright); font-size:13px;
-    position:relative; z-index:1;
-  }
-  .process-body{padding:8px 0 0 30px;}
-  .process-body .tag{font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--steam); letter-spacing:.12em; text-transform:uppercase;}
-  .process-body h3{font-size:24px; margin-top:8px; color:var(--cream);}
-  .process-body p{margin-top:10px; color:var(--cream-dim); font-size:14.5px; line-height:1.7; max-width:560px;}
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
 
-  /* ---------- MENU ---------- */
-  .menu-bg{background:var(--panel); border-top:1px solid var(--panel-line); border-bottom:1px solid var(--panel-line);}
-  .menu-cols{display:grid; grid-template-columns:1fr 1fr; gap:60px;}
-  .menu-cat{font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--gold); letter-spacing:.16em; text-transform:uppercase; margin-bottom:22px; padding-bottom:12px; border-bottom:1px solid var(--panel-line);}
-  .menu-item{display:flex; justify-content:space-between; gap:16px; padding:16px 0; border-bottom:1px dashed var(--panel-line);}
-  .menu-item:last-child{border-bottom:none;}
-  .menu-item .name{font-family:'Fraunces', serif; font-size:18px; color:var(--cream);}
-  .menu-item .desc{font-size:12.5px; color:var(--cream-dim); margin-top:4px; max-width:280px;}
-  .menu-item .price{font-family:'JetBrains Mono', monospace; color:var(--gold-bright); font-size:15px; white-space:nowrap;}
+        .nav-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-family: var(--font-title);
+            font-size: 18px;
+            letter-spacing: 1px;
+            transition: color 0.3s ease;
+            text-transform: uppercase;
+        }
 
-  /* ---------- HIJYEN / QUALITY ---------- */
-  .quality-grid{display:grid; grid-template-columns:repeat(3, 1fr); gap:1px; background:var(--panel-line); border:1px solid var(--panel-line);}
-  .quality-card{background:var(--bg-alt); padding:40px 30px;}
-  .quality-icon{width:44px; height:44px; margin-bottom:22px;}
-  .quality-icon svg{width:100%; height:100%; stroke:var(--gold); fill:none; stroke-width:1.4;}
-  .quality-card h3{font-size:19px; color:var(--cream); font-weight:600;}
-  .quality-card p{margin-top:10px; font-size:14px; color:var(--cream-dim); line-height:1.65;}
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--primary);
+        }
 
-  /* ---------- COMMUNITY / JOBS ---------- */
-  .community-wrap{display:grid; grid-template-columns:1fr 1fr; gap:70px; align-items:start;}
-  .commit-row{display:flex; gap:18px; padding:22px 0; border-top:1px solid var(--panel-line);}
-  .commit-row:last-child{border-bottom:1px solid var(--panel-line);}
-  .commit-row .mini-icon{width:26px; height:26px; flex-shrink:0; margin-top:2px;}
-  .commit-row .mini-icon svg{width:100%; height:100%; stroke:var(--gold); fill:none; stroke-width:1.5;}
-  .commit-row h4{font-size:16px; color:var(--cream); font-weight:700;}
-  .commit-row p{margin-top:6px; font-size:13.5px; color:var(--cream-dim); line-height:1.6;}
+        /* Hero (Giriş) Bölümü */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            padding: 0 20px;
+            /* Buraya arka plana güzel bir oyun içi kahve dükkanı görseli ekleyebilirsiniz */
+            background: linear-gradient(rgba(10, 8, 6, 0.85), rgba(10, 8, 6, 0.95)), url('https://i.ibb.co/qpzH4Pz/bean-machine-bg.jpg') no-repeat center center/cover;
+        }
 
-  .jobs-panel{background:var(--panel); border:1px solid var(--panel-line); padding:40px;}
-  .jobs-panel .eyebrow{margin-bottom:18px;}
-  .jobs-panel h3{font-size:26px; color:var(--cream); margin-bottom:26px;}
-  .job-row{display:flex; justify-content:space-between; align-items:center; padding:18px 0; border-top:1px solid var(--panel-line);}
-  .job-row:last-of-type{border-bottom:1px solid var(--panel-line); margin-bottom:26px;}
-  .job-row .role{font-family:'Fraunces', serif; font-size:17px; color:var(--cream);}
-  .job-row .lvl{font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--steam); letter-spacing:.08em; margin-top:4px;}
-  .job-row .status{font-family:'JetBrains Mono', monospace; font-size:11px; padding:5px 10px; border:1px solid var(--online); color:var(--online); border-radius:2px; white-space:nowrap;}
-  .job-row .status.closed{border-color:var(--copper); color:var(--copper);}
+        .hero-content {
+            max-width: 800px;
+            animation: fadeIn 1.5s ease;
+        }
 
-  /* ---------- TEAM ---------- */
-  .team-grid{display:grid; grid-template-columns:repeat(4, 1fr); gap:24px;}
-  .team-card{background:var(--panel); border:1px solid var(--panel-line); padding:26px 22px; text-align:left;}
-  .avatar{
-    width:100%; aspect-ratio:1; border-radius:2px; margin-bottom:18px;
-    background:linear-gradient(150deg, var(--copper), #2a1a0f 70%);
-    display:flex; align-items:center; justify-content:center;
-    font-family:'Fraunces', serif; font-size:30px; color:var(--cream);
-    border:1px solid var(--panel-line);
-  }
-  .team-card h4{font-size:17px; color:var(--cream);}
-  .team-card .role{font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--gold); letter-spacing:.08em; margin-top:6px; text-transform:uppercase;}
+        .hero-logo {
+            max-width: 180px;
+            margin-bottom: 20px;
+            filter: drop-shadow(0px 0px 15px rgba(197, 160, 89, 0.3));
+        }
 
-  /* ---------- CTA / CONNECT ---------- */
-  .connect{
-    background:linear-gradient(155deg, #241608 0%, #180F09 70%);
-    border-top:1px solid var(--panel-line);
-    text-align:center;
-    padding:120px 0;
-  }
-  .connect .eyebrow{justify-content:center;}
-  .connect .eyebrow::before{display:none;}
-  .connect h2{font-size:clamp(34px, 5vw, 58px); margin:20px auto 20px; max-width:700px;}
-  .connect p{color:var(--cream-dim); max-width:480px; margin:0 auto 40px; font-size:15.5px; line-height:1.7;}
-  .connect-actions{display:flex; gap:16px; justify-content:center; flex-wrap:wrap;}
-  .ip-tag{
-    margin:36px auto 0; display:inline-flex; gap:10px; align-items:center;
-    font-family:'JetBrains Mono', monospace; font-size:13px; color:var(--steam);
-    border:1px solid var(--panel-line); padding:10px 18px; border-radius:2px;
-  }
+        .hero h1 {
+            font-family: var(--font-title);
+            font-size: 55px;
+            color: var(--primary);
+            letter-spacing: 3px;
+            line-height: 1.2;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
 
-  /* ---------- FOOTER ---------- */
-  footer{border-top:1px solid var(--panel-line); padding:60px 0 34px;}
-  .foot-grid{display:grid; grid-template-columns:1.4fr 1fr 1fr 1fr; gap:40px; padding-bottom:40px;}
-  .foot-brand .brand{margin-bottom:16px;}
-  .foot-brand p{color:var(--cream-dim); font-size:13.5px; line-height:1.7; max-width:280px;}
-  .foot-col h5{font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--gold); margin-bottom:16px;}
-  .foot-col a, .foot-col p{display:block; font-size:13.5px; color:var(--cream-dim); margin-bottom:10px;}
-  .foot-col a:hover{color:var(--gold-bright);}
-  .foot-bottom{display:flex; justify-content:space-between; padding-top:28px; border-top:1px solid var(--panel-line); font-family:'JetBrains Mono', monospace; font-size:11.5px; color:var(--steam); flex-wrap:wrap; gap:10px;}
+        .hero p {
+            font-size: 20px;
+            color: var(--text-light);
+            margin-bottom: 30px;
+            letter-spacing: 1px;
+            font-weight: 300;
+        }
 
-  /* ---------- REVEAL ---------- */
-  .reveal{opacity:0; transform:translateY(24px); transition:opacity .7s ease, transform .7s ease;}
-  .reveal.in{opacity:1; transform:translateY(0);}
+        .btn {
+            display: inline-block;
+            background-color: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            padding: 12px 30px;
+            font-family: var(--font-title);
+            font-size: 18px;
+            letter-spacing: 2px;
+            text-decoration: none;
+            text-transform: uppercase;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
 
-  /* ---------- RESPONSIVE ---------- */
-  @media (max-width:980px){
-    .panel-grid{grid-template-columns:repeat(2, 1fr);}
-    .panel-cell{border-bottom:1px solid var(--panel-line);}
-    .values-grid{grid-template-columns:repeat(2, 1fr);}
-    .quality-grid{grid-template-columns:1fr;}
-    .menu-cols{grid-template-columns:1fr; gap:44px;}
-    .community-wrap{grid-template-columns:1fr; gap:50px;}
-    .team-grid{grid-template-columns:repeat(2, 1fr);}
-    .foot-grid{grid-template-columns:1fr 1fr; gap:32px;}
-  }
-  @media (max-width:720px){
-    .navlinks{display:none;}
-    .menu-toggle{display:flex;}
-    .hero{padding-top:140px;}
-    .hero-foot{flex-direction:column; align-items:flex-start;}
-    .panel-grid{grid-template-columns:1fr;}
-    .values-grid{grid-template-columns:1fr;}
-    .section-pad{padding:90px 0;}
-    .team-grid{grid-template-columns:1fr 1fr;}
-    .foot-grid{grid-template-columns:1fr;}
-    .wrap{padding:0 20px;}
-  }
-</style>
+        .btn:hover {
+            background-color: var(--primary);
+            color: var(--bg-dark);
+            box-shadow: 0 0 15px rgba(197, 160, 89, 0.4);
+        }
+
+        /* Genel Bölüm Düzenleri */
+        section {
+            padding: 100px 8%;
+            border-bottom: 1px solid rgba(197, 160, 89, 0.05);
+        }
+
+        .section-title {
+            text-align: center;
+            font-family: var(--font-title);
+            font-size: 38px;
+            color: var(--primary);
+            margin-bottom: 60px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 3px;
+            background-color: var(--primary);
+            margin: 15px auto 0 auto;
+        }
+
+        /* Hakkımızda / Tanıtım */
+        .about-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: center;
+        }
+
+        .about-text h3 {
+            font-family: var(--font-title);
+            font-size: 28px;
+            color: var(--text-light);
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+        }
+
+        .about-text p {
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+
+        .about-images {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .about-img-wrapper {
+            border: 1px solid var(--primary);
+            padding: 5px;
+            background-color: var(--bg-card);
+            transition: transform 0.3s ease;
+        }
+
+        .about-img-wrapper:hover {
+            transform: scale(1.03);
+        }
+
+        .about-img-wrapper img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* Değerlerimiz (Özellikler Grid) */
+        .grid-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 30px;
+        }
+
+        .feature-card {
+            background-color: var(--bg-card);
+            border: 1px solid rgba(197, 160, 89, 0.1);
+            padding: 40px 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .feature-icon {
+            font-size: 40px;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+            font-family: var(--font-title);
+            font-size: 20px;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+            color: var(--text-light);
+            text-transform: uppercase;
+        }
+
+        .feature-card p {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        /* Özel Alanlar (Dost Kart, Menü, Atmosfer) */
+        .special-sections {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .special-card {
+            background-color: var(--bg-card);
+            border: 1px solid rgba(197, 160, 89, 0.15);
+            border-radius: 4px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .special-img {
+            height: 220px;
+            width: 100%;
+            object-fit: cover;
+            border-bottom: 2px solid var(--primary);
+        }
+
+        .special-content {
+            padding: 30px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .special-content h3 {
+            font-family: var(--font-title);
+            font-size: 22px;
+            color: var(--primary);
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .special-content p {
+            color: var(--text-muted);
+            font-size: 14.5px;
+            margin-bottom: 20px;
+        }
+
+        /* İletişim & Sosyal Medya Footer */
+        footer {
+            background-color: #050403;
+            padding: 60px 8% 30px 8%;
+            text-align: center;
+            border-top: 2px solid var(--primary);
+        }
+
+        .footer-logo {
+            max-width: 100px;
+            margin-bottom: 20px;
+        }
+
+        .footer-quote {
+            font-family: var(--font-title);
+            font-size: 24px;
+            color: var(--primary);
+            letter-spacing: 1.5px;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+        }
+
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .social-icons a {
+            color: var(--text-muted);
+            font-size: 22px;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        .social-icons a:hover {
+            color: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        .location-info {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            color: var(--text-muted);
+            margin-bottom: 30px;
+            font-size: 15px;
+        }
+
+        .location-info i {
+            color: var(--primary);
+        }
+
+        .copyright {
+            color: #555;
+            font-size: 12px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            padding-top: 20px;
+        }
+
+        /* Animasyonlar */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Mobil Uyumluluk */
+        @media (max-width: 768px) {
+            nav {
+                padding: 15px 20px;
+            }
+            .nav-links {
+                display: none; /* Basitlik için mobil menü linkleri gizlendi veya burger eklenebilir */
+            }
+            .hero h1 {
+                font-size: 38px;
+            }
+            .hero p {
+                font-size: 16px;
+            }
+            .about-container {
+                grid-template-columns: 1fr;
+            }
+            section {
+                padding: 60px 5%;
+            }
+        }
+    </style>
 </head>
 <body>
 
-<header id="siteHeader">
-  <div class="wrap">
+    <!-- Navigasyon Barı -->
     <nav>
-      <a href="#top" class="brand"><span class="mark"></span>BEAN MACHINE <span>COFFEE</span></a>
-      <div class="navlinks">
-        <a href="#hakkimizda">Hakkımızda</a>
-        <a href="#surec">Süreçlerimiz</a>
-        <a href="#menu">Menü</a>
-        <a href="#kalite">Kalite &amp; Hijyen</a>
-        <a href="#topluluk">Topluluk</a>
-        <a href="#kariyer">Kariyer</a>
-      </div>
-      <a href="#baglan" class="btn solid">Sunucuya Katıl</a>
-      <button class="menu-toggle" aria-label="Menü"><span></span><span></span><span></span></button>
+        <a href="#" class="nav-logo">
+            <!-- Logonuzun linkini buraya yerleştirebilirsiniz -->
+            <img src="logo.png" alt="Bean Machine Logo"> 
+            BEAN MACHINE
+        </a>
+        <ul class="nav-links">
+            <li><a href="#hero">Ana Sayfa</a></li>
+            <li><a href="#hakkimizda">Hakkımızda</a></li>
+            <li><a href="#degerlerimiz">Değerlerimiz</a></li>
+            <li><a href="#ozellikler">Ayrıcalıklar</a></li>
+        </ul>
     </nav>
-  </div>
-</header>
 
-<section class="hero" id="top">
-  <svg class="skyline" viewBox="0 0 1400 500" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
-    <g fill="#2A1A0F">
-      <rect x="20" y="220" width="70" height="280"/>
-      <rect x="110" y="160" width="50" height="340"/>
-      <rect x="180" y="260" width="90" height="240"/>
-      <rect x="300" y="120" width="60" height="380"/>
-      <rect x="1050" y="180" width="80" height="320"/>
-      <rect x="1150" y="100" width="55" height="400"/>
-      <rect x="1230" y="240" width="100" height="260"/>
-      <rect x="1340" y="150" width="50" height="350"/>
-    </g>
-    <g fill="#C9A15C" opacity=".35">
-      <rect x="35" y="250" width="6" height="6"/><rect x="55" y="270" width="6" height="6"/>
-      <rect x="125" y="200" width="6" height="6"/><rect x="145" y="230" width="6" height="6"/>
-      <rect x="320" y="160" width="6" height="6"/><rect x="340" y="200" width="6" height="6"/>
-      <rect x="1070" y="220" width="6" height="6"/><rect x="1170" y="150" width="6" height="6"/>
-      <rect x="1250" y="280" width="6" height="6"/><rect x="1360" y="190" width="6" height="6"/>
-    </g>
-  </svg>
-  <div class="wrap hero-inner">
-    <div class="eyebrow">FiveM Roleplay İşletmesi — Şehir Merkezi</div>
-    <h1>Şehrin Enerjisi<em>bir fincanda.</em></h1>
-    <p class="lede">Bean Machine Coffee, sunucumuzun kalbinde çalışan bir kahve işletmesidir. Dürüst tedarik, hızlı servis ve gerçek bir ekip ruhuyla; rol yapan her karaktere kaliteli bir mola sunuyoruz.</p>
-    <div class="hero-actions">
-      <a href="#baglan" class="btn solid">connect play.beanmachine.rp</a>
-      <a href="#kariyer" class="btn">Ekibe Katıl →</a>
-    </div>
-    <div class="hero-foot">
-      <div class="scroll-cue"><div class="line"></div>Aşağı Kaydır</div>
-      <div class="coord">36.7N — 03.0E · GÜNEY OTOBAN ÇIKIŞI, ŞEHİR MERKEZİ</div>
-    </div>
-  </div>
-</section>
+    <!-- Hero Alanı -->
+    <section id="hero" class="hero">
+        <div class="hero-content">
+            <!-- Ortadaki yuvarlak logo referansı -->
+            <img class="hero-logo" src="logo.png" alt="Bean Machine Coffee">
+            <h1>KAHVEYE OLAN TUTKUMUZ, SİZE OLAN BAĞLILIĞIMIZ.</h1>
+            <p>Her kupada gerçek, her yudumda kalite.</p>
+            <a href="#hakkimizda" class="btn">Keşfet</a>
+        </div>
+    </section>
 
-<section class="panel-bar reveal">
-  <div class="wrap">
-    <div class="panel-grid">
-      <div class="panel-cell gauge-cell">
-        <svg class="gauge" viewBox="0 0 76 76">
-          <circle class="track" cx="38" cy="38" r="33"/>
-          <circle class="fill" cx="38" cy="38" r="33"/>
-        </svg>
-        <div class="gauge-label">
-          <span class="k">Kavurma Göstergesi</span>
-          <span class="v">Orta-Koyu</span>
+    <!-- Hakkımızda Bölümü -->
+    <section id="hakkimizda">
+        <div class="about-container">
+            <div class="about-text">
+                <h2 style="color: var(--primary); font-family: var(--font-title); font-size: 20px; letter-spacing: 2px; margin-bottom: 10px;">SADECE KAHVE DEĞİL, BİR TOPLULUK.</h2>
+                <h3>Bean Machine Deneyimi</h3>
+                <p>Bean Machine, kahveyi sadece bir içecek değil, bir deneyim olarak görenlerin buluşma noktasıdır. Özenle seçilmiş çekirdekler, ustalıkla hazırlanan tarifler ve benzersiz atmosferimizle, her gününüze en iyi kahve deneyimini sunuyoruz.</p>
+                <p>Burada sohbetler koyulaşır, bağlar güçlenir, anılar birikir. Sizlerle kurduğumuz bağ, en değerli hazinemizdir.</p>
+            </div>
+            <!-- Oyun içi dükkan görsellerinizi koyabileceğiniz alan -->
+            <div class="about-images">
+                <div class="about-img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&w=500&q=80" alt="Mekan İçi 1">
+                </div>
+                <div class="about-img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=500&q=80" alt="Mekan İçi 2">
+                </div>
+                <div class="about-img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1442512595331-e89e73853f31?auto=format&fit=crop&w=500&q=80" alt="Barista">
+                </div>
+                <div class="about-img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=500&q=80" alt="Kahve">
+                </div>
+            </div>
         </div>
-      </div>
-      <div class="panel-cell stat-cell">
-        <span class="k">Sunucu Durumu</span>
-        <span class="v"><span class="dot"></span> Aktif</span>
-      </div>
-      <div class="panel-cell stat-cell">
-        <span class="k">Vardiyadaki Personel</span>
-        <span class="v"><span>7</span> / 12</span>
-      </div>
-      <div class="panel-cell stat-cell">
-        <span class="k">Günlük Servis</span>
-        <span class="v"><span>340+</span> fincan</span>
-      </div>
-      <div class="panel-cell stat-cell">
-        <span class="k">Ortalama Servis Süresi</span>
-        <span class="v"><span>52</span> sn</span>
-      </div>
-    </div>
-  </div>
-</section>
+    </section>
 
-<section class="section-pad" id="hakkimizda">
-  <div class="wrap">
-    <div class="section-head reveal">
-      <div class="eyebrow">Değerlerimiz</div>
-      <h2>Bir bardağın arkasında<br>dört ilke duruyor.</h2>
-      <p>Bean Machine Coffee'yi kuran ekip, sunucudaki her işletmenin bir vitrin olmadığını, oynanabilir bir topluluk olduğunu düşünür. Bu dört ilke, her vardiyada uyguladığımız kurallardır.</p>
-    </div>
-    <div class="values-grid reveal">
-      <div class="value-card">
-        <div class="num">01 — DÜRÜSTLÜK</div>
-        <h3>Şeffaflık</h3>
-        <p>Fiyatlar, tedarik zinciri ve kasa kayıtları herkese açık. Sunucu ekonomisine karşı sorumluluğumuzu ciddiye alıyoruz.</p>
-      </div>
-      <div class="value-card">
-        <div class="num">02 — HIZ</div>
-        <h3>Verimlilik</h3>
-        <p>Şehrin temposuna ayak uyduran bir servis hızı. Karakterin molası kısa, kahvesi her zaman hazır.</p>
-      </div>
-      <div class="value-card">
-        <div class="num">03 — TOPLULUK</div>
-        <h3>Communik</h3>
-        <p>Mahalle esnafıyız. Yan işletmelerle, sokak satıcılarıyla ve düzenli müşterilerle gerçek bir bağ kuruyoruz.</p>
-      </div>
-      <div class="value-card">
-        <div class="num">04 — YENİLİK</div>
-        <h3>İnovasyon</h3>
-        <p>Sezonluk menüler, yeni roller ve topluluk etkinlikleriyle işletmeyi durağan bırakmıyoruz.</p>
-      </div>
-    </div>
-  </div>
-</section>
+    <!-- Değerlerimiz (İkonlu Alan) -->
+    <section id="degerlerimiz" style="background-color: #080605;">
+        <h2 class="section-title">Kahvede Kalitenin Adı</h2>
+        <div class="grid-features">
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fa-solid fa-seedling"></i></div>
+                <h3>Özenle Seçilmiş Çekirdekler</h3>
+                <p>Dünyanın en iyi kahve bölgelerinden, en kaliteli çekirdekleri seçiyoruz.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fa-solid fa-fire"></i></div>
+                <h3>Ustalıkla Kavrulmuş</h3>
+                <p>Her çekirdeği ideal sıcaklıkta kavurarak aromayı ve lezzeti en üst düzeye çıkarıyoruz.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fa-solid fa-mug-hot"></i></div>
+                <h3>Profesyonel Hazırlık</h3>
+                <p>Deneyimli baristalarımızla her fincanda tutarlılık ve mükemmellik hedefliyoruz.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fa-solid fa-heart"></i></div>
+                <h3>Zengin ve Dengeli Lezzet</h3>
+                <p>Yoğun aroması ve yumuşak içimiyle her yudumda farkı hissedeceksiniz.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fa-solid fa-award"></i></div>
+                <h3>Kaliteden Ödün Vermeyiz</h3>
+                <p>Standartlarımız yüksek, çünkü siz en iyisini hak ediyorsunuz.</p>
+            </div>
+        </div>
+    </section>
 
-<section class="section-pad" id="surec" style="padding-top:0;">
-  <div class="wrap">
-    <div class="section-head reveal">
-      <div class="eyebrow">Fabrika Düzeni ve Süreçlerimiz</div>
-      <h2>Çekirdekten fincana,<br>dört adımda.</h2>
-      <p>Kahvemiz sunucu içi bir üretim zinciriyle işleniyor. Her adım, ilgili rolü üstlenen oyuncular tarafından gerçek zamanlı yürütülür.</p>
-    </div>
-    <div class="process">
-      <div class="process-line"></div>
-      <div class="process-step reveal">
-        <div class="process-num">01</div>
-        <div class="process-body">
-          <div class="tag">Tedarik</div>
-          <h3>Çekirdek Seçimi</h3>
-          <p>Tedarikçi rolündeki oyuncular, şehir dışından gelen çekirdek partilerini teslim alır ve kalite kontrolünden geçirir.</p>
+    <!-- Özellikler / Kampanyalar -->
+    <section id="ozellikler">
+        <h2 class="section-title">Ayrıcalıklı Hizmetlerimiz</h2>
+        <div class="special-sections">
+            <!-- Kart 1: Dost Kart -->
+            <div class="special-card">
+                <img class="special-img" src="https://images.unsplash.com/photo-1556742044-3c52d6e88c62?auto=format&fit=crop&w=600&q=80" alt="Dost Kart">
+                <div class="special-content">
+                    <h3>Bean Machine Dost Kart</h3>
+                    <p>Kahve keyfinizi ödüllendiriyoruz! Her içecekte puan kazanın, özel fırsatlardan ve sürpriz hediyelerden faydalanın.</p>
+                    <a href="#" class="btn" style="padding: 8px 20px; font-size: 14px; align-self: flex-start;">Detaylar</a>
+                </div>
+            </div>
+            <!-- Kart 2: Özel Tarifler -->
+            <div class="special-card">
+                <img class="special-img" src="https://images.unsplash.com/photo-1511920170033-f8396924c348?auto=format&fit=crop&w=600&q=80" alt="Özel Tarifler">
+                <div class="special-content">
+                    <h3>Özel Tarifler, Eşsiz Deneyimler</h3>
+                    <p>Klasiklerden vazgeçmeyenlere, yenilikleri keşfetmek isteyenlere özel tariflerimizle her damak zevkine hitap ediyoruz.</p>
+                    <a href="#" class="btn" style="padding: 8px 20px; font-size: 14px; align-self: flex-start;">Menüyü Gör</a>
+                </div>
+            </div>
+            <!-- Kart 3: Atmosfer -->
+            <div class="special-card">
+                <img class="special-img" src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=600&q=80" alt="Atmosferimiz">
+                <div class="special-content">
+                    <h3>Atmosferimiz, Kahvemiz Kadar Özel</h3>
+                    <p>Modern, sıcak ve samimi ortamımızda kendinizi evinizde gibi hissedeceksiniz. Roleplay kalitenizi artıracak harika bir sosyal alan.</p>
+                    <a href="#" class="btn" style="padding: 8px 20px; font-size: 14px; align-self: flex-start;">Galeri</a>
+                </div>
+            </div>
         </div>
-      </div>
-      <div class="process-step reveal">
-        <div class="process-num">02</div>
-        <div class="process-body">
-          <div class="tag">Üretim</div>
-          <h3>Endüstriyel Kavurma</h3>
-          <p>Depo katındaki kavurma istasyonunda, personel çekirdekleri belirlenen tarife göre kavurup soğutma tepsisine aktarır.</p>
-        </div>
-      </div>
-      <div class="process-step reveal">
-        <div class="process-num">03</div>
-        <div class="process-body">
-          <div class="tag">Servis</div>
-          <h3>Usta Barista</h3>
-          <p>Vitrindeki barista, siparişi alır, espresso makinesinde hazırlar ve müşteriyle kısa bir diyalog kurar — RP'nin kalbi burada.</p>
-        </div>
-      </div>
-      <div class="process-step reveal">
-        <div class="process-num">04</div>
-        <div class="process-body">
-          <div class="tag">Teslimat</div>
-          <h3>Anında Servis</h3>
-          <p>Sipariş tezgahtan teslim edilir ya da bisikletli kurye ile parktaki standımıza kadar götürülür.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+    </section>
 
-<section class="menu-bg section-pad" id="menu">
-  <div class="wrap">
-    <div class="section-head reveal">
-      <div class="eyebrow">Menümüz</div>
-      <h2>Vardiya boyunca<br>tazelenen liste.</h2>
-      <p>Fiyatlar sunucu içi para birimi iledir. Menü, mevsime ve stok durumuna göre haftalık güncellenir.</p>
-    </div>
-    <div class="menu-cols reveal">
-      <div>
-        <div class="menu-cat">Sıcak İçecekler</div>
-        <div class="menu-item">
-          <div><div class="name">Espresso</div><div class="desc">Tek shot, koyu kavrum</div></div>
-          <div class="price">$14</div>
+    <!-- Footer ve İletişim -->
+    <footer>
+        <img class="footer-logo" src="logo.png" alt="Bean Machine Logo">
+        <p class="footer-quote">İyi Kahve, İyi İnsanlar, İyi Anlar.</p>
+        
+        <!-- Sosyal Medya İkonları (FiveM veya Topluluk Linkleriniz) -->
+        <div class="social-icons">
+            <a href="#" target="_blank" title="Discord"><i class="fa-brands fa-discord"></i></a>
+            <a href="#" target="_blank" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
+            <a href="#" target="_blank" title="TikTok"><i class="fa-brands fa-tiktok"></i></a>
+            <a href="#" target="_blank" title="Web"><i class="fa-solid fa-globe"></i></a>
         </div>
-        <div class="menu-item">
-          <div><div class="name">Flat White</div><div class="desc">Çift shot, buharda süt</div></div>
-          <div class="price">$22</div>
-        </div>
-        <div class="menu-item">
-          <div><div class="name">Karamelli Latte</div><div class="desc">Ev yapımı karamel sosu</div></div>
-          <div class="price">$26</div>
-        </div>
-        <div class="menu-item">
-          <div><div class="name">Filtre Kahve</div><div class="desc">Günün demlemesi</div></div>
-          <div class="price">$16</div>
-        </div>
-      </div>
-      <div>
-        <div class="menu-cat">Fırından</div>
-        <div class="menu-item">
-          <div><div class="name">Tarçınlı Rulo</div><div class="desc">Günlük taze fırınlanır</div></div>
-          <div class="price">$18</div>
-        </div>
-        <div class="menu-item">
-          <div><div class="name">Kruvasan</div><div class="desc">Tereyağlı, katmerli</div></div>
-          <div class="price">$15</div>
-        </div>
-        <div class="menu-item">
-          <div><div class="name">Çikolatalı Kruvasan</div><div class="desc">Belçika çikolatası</div></div>
-          <div class="price">$19</div>
-        </div>
-        <div class="menu-item">
-          <div><div class="name">Soğuk Demleme</div><div class="desc">12 saat demlenmiş</div></div>
-          <div class="price">$24</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
 
-<section class="section-pad" id="kalite">
-  <div class="wrap">
-    <div class="section-head reveal">
-      <div class="eyebrow">Ürün Kalitesi ve Hijyen</div>
-      <h2>Vitrinin arkasında<br>sabit bir standart.</h2>
-      <p>Kalite, tek bir baristanın inisiyatifi değil, işletmenin tamamına yayılan bir kuraldır. RP içinde de bu kurallara sadık kalıyoruz.</p>
-    </div>
-    <div class="quality-grid reveal">
-      <div class="quality-card">
-        <div class="quality-icon"><svg viewBox="0 0 24 24"><path d="M7 3v6M12 3v6M17 3v6M4 12h16l-1.5 8h-13z"/></svg></div>
-        <h3>Hijyen Standartları</h3>
-        <p>Her vardiya başında ekipman kontrolü yapılır; eldiven ve önlük kullanımı zorunludur.</p>
-      </div>
-      <div class="quality-card">
-        <div class="quality-icon"><svg viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 010 8h-1M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/><path d="M6 2v3M10 2v3M14 2v3"/></svg></div>
-        <h3>Taze Ürün</h3>
-        <p>Çekirdek ve hamur işleri günlük partiler halinde hazırlanır; bekleyen stok satışa sunulmaz.</p>
-      </div>
-      <div class="quality-card">
-        <div class="quality-icon"><svg viewBox="0 0 24 24"><path d="M8 12a4 4 0 118 0 4 4 0 01-8 0z"/><path d="M2 12h2M20 12h2M12 2v2M12 20v2M5 5l1.5 1.5M17.5 17.5L19 19M19 5l-1.5 1.5M6.5 17.5L5 19"/></svg></div>
-        <h3>Adil Ticaret</h3>
-        <p>Tedarikçi anlaşmaları sunucu ekonomisine uygun, sabit ve şeffaf fiyat politikasıyla yürütülür.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="section-pad" id="topluluk" style="padding-top:0;">
-  <div class="wrap">
-    <div class="community-wrap">
-      <div class="reveal">
-        <div class="eyebrow">Topluluğa Katkımız</div>
-        <h2 style="margin-top:18px; font-size:clamp(30px,4vw,42px);">İyi bir toplum,<br>birlikte mümkün.</h2>
-        <div class="commit-row">
-          <div class="mini-icon"><svg viewBox="0 0 24 24"><path d="M3 21l3-8 8-8 5 5-8 8-8 3z"/><path d="M13 6l5 5"/></svg></div>
-          <div><h4>Yerel Destek</h4><p>Mahalledeki küçük işletmelerle ortak etkinlikler ve karşılıklı tedarik anlaşmaları kuruyoruz.</p></div>
+        <div class="location-info">
+            <i class="fa-solid fa-location-dot"></i>
+            <span>Los Santos'un en iyi kahvesi seni bekliyor.</span>
         </div>
-        <div class="commit-row">
-          <div class="mini-icon"><svg viewBox="0 0 24 24"><path d="M12 2a9 9 0 100 18 9 9 0 000-18z"/><path d="M12 8v4l3 2"/></svg></div>
-          <div><h4>Sürdürülebilirlik</h4><p>Bardak iadesi ve geri dönüşüm sistemiyle sunucu içi çevre RP'sine katkı sağlıyoruz.</p></div>
-        </div>
-        <div class="commit-row">
-          <div class="mini-icon"><svg viewBox="0 0 24 24"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"/></svg></div>
-          <div><h4>Geleceğe Yatırım</h4><p>Yeni oyunculara barista eğitimi ve mentorluk vererek işletme rolünü öğretiyoruz.</p></div>
-        </div>
-      </div>
-      <div class="jobs-panel reveal" id="kariyer">
-        <div class="eyebrow">Kariyer</div>
-        <h3>Açık Pozisyonlar</h3>
-        <div class="job-row">
-          <div><div class="role">Barista</div><div class="lvl">GİRİŞ SEVİYESİ · TAM ZAMANLI RP</div></div>
-          <div class="status">Açık</div>
-        </div>
-        <div class="job-row">
-          <div><div class="role">Kurye</div><div class="lvl">GİRİŞ SEVİYESİ · ESNEK</div></div>
-          <div class="status">Açık</div>
-        </div>
-        <div class="job-row">
-          <div><div class="role">Vardiya Amiri</div><div class="lvl">ORTA SEVİYE · DENEYİM GEREKLİ</div></div>
-          <div class="status">Açık</div>
-        </div>
-        <div class="job-row">
-          <div><div class="role">İşletme Müdürü</div><div class="lvl">ÜST DÜZEY · BAŞVURU KAPALI</div></div>
-          <div class="status closed">Dolu</div>
-        </div>
-        <a href="#baglan" class="btn solid" style="width:100%; justify-content:center;">Başvuru Formunu Aç</a>
-      </div>
-    </div>
-  </div>
-</section>
 
-<section class="section-pad">
-  <div class="wrap">
-    <div class="section-head reveal">
-      <div class="eyebrow">Ekibimiz</div>
-      <h2>Güçlü topluluk,<br>lezzetli kahve.</h2>
-      <p>Birlikte daha güçlüyüz, daha iyi bir şehir için. Vitrinin arkasındaki isimler.</p>
-    </div>
-    <div class="team-grid reveal">
-      <div class="team-card"><div class="avatar">EK</div><h4>Ege Kartal</h4><div class="role">İşletme Müdürü</div></div>
-      <div class="team-card"><div class="avatar">SD</div><div style="margin-top:0"></div><h4>Selin Demir</h4><div class="role">Vardiya Amiri</div></div>
-      <div class="team-card"><div class="avatar">BY</div><h4>Berk Yıldız</h4><div class="role">Usta Barista</div></div>
-      <div class="team-card"><div class="avatar">NÇ</div><h4>Naz Çelik</h4><div class="role">Kurye Sorumlusu</div></div>
-    </div>
-  </div>
-</section>
+        <p class="copyright">&copy; 2026 Bean Machine Coffee. Tüm Hakları Saklıdır. Designed for FiveM Roleplay.</p>
+    </footer>
 
-<section class="connect" id="baglan">
-  <div class="wrap">
-    <div class="eyebrow">Sunucuya Katıl</div>
-    <h2>Fincanın senin elinde,<br>hikaye senin karakterinde.</h2>
-    <p>Bean Machine Coffee ekibine katılmak veya sadece bir kahve içmek için sunucumuza bağlan. Discord'da başvuru formunu doldurabilirsin.</p>
-    <div class="connect-actions">
-      <a href="#" class="btn solid">Discord'a Katıl</a>
-      <a href="#" class="btn">Başvuru Formu →</a>
-    </div>
-    <div class="ip-tag"><span class="dot"></span> connect play.beanmachine.rp:30120</div>
-  </div>
-</section>
-
-<footer>
-  <div class="wrap">
-    <div class="foot-grid">
-      <div class="foot-brand">
-        <a href="#top" class="brand"><span class="mark"></span>BEAN MACHINE <span>COFFEE</span></a>
-        <p>Şehir merkezinde, sunucumuzun roleplay ekonomisine hizmet eden bir kahve işletmesi. Dürüstlük, hız ve topluluk ilkeleriyle çalışıyoruz.</p>
-      </div>
-      <div class="foot-col">
-        <h5>İşletme</h5>
-        <a href="#hakkimizda">Hakkımızda</a>
-        <a href="#surec">Süreçlerimiz</a>
-        <a href="#menu">Menü</a>
-        <a href="#kalite">Kalite &amp; Hijyen</a>
-      </div>
-      <div class="foot-col">
-        <h5>Topluluk</h5>
-        <a href="#topluluk">Katkımız</a>
-        <a href="#kariyer">Kariyer</a>
-        <a href="#baglan">Sunucuya Katıl</a>
-      </div>
-      <div class="foot-col">
-        <h5>Konum</h5>
-        <p>36.7N — 03.0E</p>
-        <p>Güney Otoban Çıkışı</p>
-        <p>Şehir Merkezi</p>
-      </div>
-    </div>
-    <div class="foot-bottom">
-      <span>© 2026 BEAN MACHINE COFFEE — Kurgusal FiveM İşletmesi</span>
-      <span>connect play.beanmachine.rp:30120</span>
-    </div>
-  </div>
-</footer>
-
-<script>
-  const header = document.getElementById('siteHeader');
-  window.addEventListener('scroll', () => {
-    header.classList.toggle('scrolled', window.scrollY > 40);
-  });
-
-  const revealEls = document.querySelectorAll('.reveal');
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
-  }, { threshold: 0.12 });
-  revealEls.forEach(el => io.observe(el));
-
-  const toggle = document.querySelector('.menu-toggle');
-  const links = document.querySelector('.navlinks');
-  toggle?.addEventListener('click', () => {
-    const open = links.style.display === 'flex';
-    links.style.cssText = open ? '' : 'display:flex; position:fixed; top:70px; left:20px; right:20px; background:#20140C; border:1px solid #4A331F; flex-direction:column; padding:20px; gap:18px; z-index:99;';
-  });
-</script>
-
+    <!-- Basit Aktif Navigasyon Takip Scripti -->
+    <script>
+        window.addEventListener('scroll', () => {
+            let sections = document.querySelectorAll('section');
+            let navLinks = document.querySelectorAll('.nav-links a');
+            
+            sections.forEach(sec => {
+                let top = window.scrollY;
+                let offset = sec.offsetTop - 150;
+                let height = sec.offsetHeight;
+                let id = sec.getAttribute('id');
+                
+                if(top >= offset && top < offset + height) {
+                    navLinks.forEach(links => {
+                        links.classList.remove('active');
+                        document.querySelector('.nav-links a[href*=' + id + ']').classList.add('active');
+                    });
+                }
+            });
+        });
+    </script>
 </body>
 </html>
